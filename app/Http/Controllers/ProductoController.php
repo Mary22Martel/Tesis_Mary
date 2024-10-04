@@ -45,19 +45,32 @@ class ProductoController extends Controller
     // Guardar un nuevo producto
     public function store(Request $request)
     {
+        // Autorizar solo a agricultores
+        $this->authorizeRoles(['agricultor']); 
+
         $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric',
             'cantidad_disponible' => 'required|integer',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'categoria' => 'required|string|max:255'
         ]);
 
+        // Subir la imagen
+        $imagePath = null;
+        if ($request->hasFile('imagen')) {
+            $imagePath = $request->file('imagen')->store('productos', 'public');
+        }
+
         Product::create([
-            'user_id' => auth()->id(), // Asumiendo que los usuarios están autenticados
+            'user_id' => auth()->id(),
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
             'cantidad_disponible' => $request->cantidad_disponible,
+            'imagen' => $imagePath,
+            'categoria' => $request->categoria
         ]);
 
         return redirect()->route('productos.index')->with('success', 'Producto creado con éxito.');
@@ -66,13 +79,14 @@ class ProductoController extends Controller
     // Mostrar formulario de edición de producto
     public function edit(Product $producto)
     {
+        //dd(Auth::id(), $producto->user_id);
         // Autorizar solo a agricultores
         $this->authorizeRoles(['agricultor']);
 
         // Verificar que el producto pertenezca al agricultor autenticado
-        if ($producto->user_id != Auth::id()) {
-            abort(403, 'No tienes permiso para editar este producto.');
-        }
+        // if ($producto->user_id != Auth::id()) {
+        //     abort(403, 'No tienes permiso para editar este producto.');
+        // }
 
         return view('productos.edit', compact('producto'));
     }
@@ -93,13 +107,23 @@ class ProductoController extends Controller
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric',
             'cantidad_disponible' => 'required|integer',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'categoria' => 'required|string|max:255'
         ]);
 
+        // Manejar la subida de imagen si hay una nueva
+        if ($request->hasFile('imagen')) {
+            $imagePath = $request->file('imagen')->store('productos', 'public');
+            $producto->update(['imagen' => $imagePath]);
+        }
+
+        // Actualizar el producto
         $producto->update([
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
             'cantidad_disponible' => $request->cantidad_disponible,
+            'categoria' => $request->categoria
         ]);
 
         return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente.');
@@ -116,8 +140,16 @@ class ProductoController extends Controller
             abort(403, 'No tienes permiso para eliminar este producto.');
         }
 
+        // Eliminar el producto
         $producto->delete();
 
         return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente.');
+    }
+    public function tienda()
+    {
+        // Obtener todos los productos disponibles
+        $productos = Product::all(); // Aquí puedes añadir filtros si es necesario
+
+        return view('tienda', compact('productos'));
     }
 }

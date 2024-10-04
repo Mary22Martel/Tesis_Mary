@@ -38,9 +38,10 @@
     <!-- Boton Vender -->
     <div class="text-center mt-5">
         <!-- Botón de acción "Vender en Ecobazar" arriba del contenido -->
-            <a href="#" class="inline-block mb-4 px-6 py-5 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 text-xl">
-                Vender en Ecobazar
-            </a>
+        <a href="{{ route('agricultor.register') }}" class="inline-block mb-4 px-6 py-5 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 text-xl">
+            Vender en Ecobazar
+        </a>
+
     </div>
     <!--Cards Izquierda-->
     <section class="py-16 bg-white px-20">
