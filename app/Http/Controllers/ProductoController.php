@@ -50,6 +50,7 @@ class ProductoController extends Controller
 
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'medida' => 'required|max:100',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric',
             'cantidad_disponible' => 'required|integer',
@@ -66,6 +67,7 @@ class ProductoController extends Controller
         Product::create([
             'user_id' => auth()->id(),
             'nombre' => $request->nombre,
+            'medida' => $request->medida,
             'descripcion' => $request->descripcion,
             'precio' => $request->precio,
             'cantidad_disponible' => $request->cantidad_disponible,

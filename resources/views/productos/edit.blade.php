@@ -1,54 +1,81 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto mt-8">
-    <h1 class="text-3xl font-bold mb-6">Editar Producto</h1>
+<div class="container mx-auto mt-12 max-w-3xl">
+    <h1 class="text-5xl font-bold text-orange-400 mb-8 text-center">Editar Producto</h1>
 
-    <form action="{{ route('productos.update', $producto) }}" method="POST" class="bg-white shadow-md rounded-lg p-6" enctype="multipart/form-data">
+    <!-- Mostrar errores de validación -->
+    @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+            <strong class="font-bold">¡Error!</strong>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('productos.update', $producto) }}" method="POST" class="bg-white shadow-lg rounded-lg p-8 space-y-6" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         <!-- Nombre del Producto -->
-        <div class="mb-4">
-            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre del Producto</label>
-            <input type="text" name="nombre" id="nombre" value="{{ $producto->nombre }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+        <div>
+            <label for="nombre" class="block text-lg font-semibold text-gray-700 mb-2">Nombre del Producto</label>
+            <input type="text" name="nombre" id="nombre" value="{{ old('nombre', $producto->nombre) }}" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
         </div>
 
         <!-- Descripción -->
-        <div class="mb-4">
-            <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
-            <textarea name="descripcion" id="descripcion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">{{ $producto->descripcion }}</textarea>
+        <div>
+            <label for="descripcion" class="block text-lg font-semibold text-gray-700 mb-2">Descripción</label>
+            <textarea name="descripcion" id="descripcion" rows="4" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">{{ old('descripcion', $producto->descripcion) }}</textarea>
         </div>
 
-        <!-- Precio -->
-        <div class="mb-4">
-            <label for="precio" class="block text-sm font-medium text-gray-700">Precio</label>
-            <input type="number" name="precio" id="precio" value="{{ $producto->precio }}" step="0.01" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+        <!-- Unidad de medida -->
+        <div>
+            <label for="medida" class="block text-lg font-semibold text-gray-700 mb-2">Unidad de medida</label>
+            <input type="text" name="medida" id="medida" value="{{ old('medida', $producto->medida) }}" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
         </div>
 
-        <!-- Cantidad Disponible -->
-        <div class="mb-4">
-            <label for="cantidad_disponible" class="block text-sm font-medium text-gray-700">Cantidad Disponible</label>
-            <input type="number" name="cantidad_disponible" id="cantidad_disponible" value="{{ $producto->cantidad_disponible }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+        <!-- Precio y Cantidad (Grid para mejor distribución) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Precio -->
+            <div>
+                <label for="precio" class="block text-lg font-semibold text-gray-700 mb-2">Precio</label>
+                <input type="number" name="precio" id="precio" value="{{ old('precio', $producto->precio) }}" step="0.01" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+            </div>
+
+            <!-- Cantidad Disponible -->
+            <div>
+                <label for="cantidad_disponible" class="block text-lg font-semibold text-gray-700 mb-2">Cantidad Disponible</label>
+                <input type="number" name="cantidad_disponible" id="cantidad_disponible" value="{{ old('cantidad_disponible', $producto->cantidad_disponible) }}" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+            </div>
         </div>
 
         <!-- Categoría -->
-        <div class="mb-4">
-            <label for="categoria" class="block text-sm font-medium text-gray-700">Categoría</label>
-            <input type="text" name="categoria" id="categoria" value="{{ $producto->categoria }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+        <div>
+            <label for="categoria" class="block text-lg font-semibold text-gray-700 mb-2">Categoría</label>
+            <input type="text" name="categoria" id="categoria" value="{{ old('categoria', $producto->categoria) }}" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
         </div>
 
         <!-- Imagen del Producto -->
-        <div class="mb-4">
-            <label for="imagen" class="block text-sm font-medium text-gray-700">Imagen del Producto</label>
-            <input type="file" name="imagen" id="imagen" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+        <div>
+            <label for="imagen" class="block text-lg font-semibold text-gray-700 mb-2">Imagen del Producto</label>
+            <input type="file" name="imagen" id="imagen" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">
             @if($producto->imagen)
-                <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="mt-4 w-32 h-32 object-cover">
+                <div class="mt-4">
+                    <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="w-32 h-32 object-cover rounded-lg shadow-md">
+                </div>
             @endif
         </div>
 
         <!-- Botón de Actualizar -->
-        <button type="submit" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Actualizar Producto</button>
+        <div class="pt-6">
+            <button type="submit" class="w-full py-4 bg-orange-400 text-white text-lg font-bold rounded-lg hover:bg-green-500 transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-50">
+                Actualizar Producto
+            </button>
+        </div>
     </form>
 </div>
 @endsection

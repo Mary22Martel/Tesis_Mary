@@ -116,89 +116,92 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-white py-12 px-20">
-            <div class="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
-                <!-- Logo y descripción -->
+        <footer class="bg-gray-100 text-gray-700 py-12 px-20">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
+                <!-- Logo y Descripción -->
                 <div>
                     <a href="#" class="flex items-center space-x-2 mb-4">
-                        <img src="{{ asset('images/LogoBlanco.png') }}" alt="Ecobazar Logo" class="w-22">
+                        <img src="{{ asset('images/Logo.png') }}" alt="Ecobazar Logo" class="w-34">
                     </a>
-                    <p class="text-gray-400">
-                        Morbi cursus porttitor enim lobortis molestie. Duis gravida turpis dui, eget bibendum magna.
+                    <p class="text-gray-500">
+                        Somos tu mercado en línea para productos frescos y de calidad provenientes de ferias agrícolas locales. ¡Compra directamente de los agricultores!
                     </p>
                     <div class="flex space-x-4 mt-4">
-                        <a href="#" class="text-green-500">
+                        <a href="#" class="text-2xl text-gray-700 hover:text-green-500 transition-colors">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="text-white hover:text-green-500">
+                        <a href="#" class="text-2xl text-gray-700 hover:text-green-500 transition-colors">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="text-white hover:text-green-500">
-                            <i class="fab fa-pinterest"></i>
-                        </a>
-                        <a href="#" class="text-white hover:text-green-500">
+                        <a href="#" class="text-2xl text-gray-700 hover:text-green-500 transition-colors">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
                 </div>
-
-                <!-- My Account -->
+                
+                <!-- Categorías de productos -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">My Account</h3>
+                    <h3 class="text-lg font-semibold mb-4">Categorías</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">My Account</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Order History</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Shopping Cart</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Wishlist</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Frutas y Verduras</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Bebidas</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Lácteos y Huevos</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Cereales y Legumbres</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Productos Orgánicos</a></li>
                     </ul>
                 </div>
 
-                <!-- Helps -->
+                <!-- Enlaces útiles -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Helps</h3>
+                    <h3 class="text-lg font-semibold mb-4">Enlaces Útiles</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Contact</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">FAQs</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Terms & Condition</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Inicio</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Sobre Nosotros</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Contacto</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Blog</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Términos y Condiciones</a></li>
                     </ul>
                 </div>
 
-                <!-- Proxy -->
+                <!-- Centro de ayuda -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Proxy</h3>
+                    <h3 class="text-lg font-semibold mb-4">Centro de Ayuda</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">About</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Shop</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Product</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-green-500">Track Order</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Tu Pedido</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Tu Cuenta</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Rastreo de Pedido</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Lista de Deseos</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Preguntas Frecuentes</a></li>
                     </ul>
                 </div>
 
-                <!-- Download Mobile App -->
+                <!-- Información de Contacto -->
                 <div>
-                    <h3 class="text-lg font-semibold mb-4">Download Mobile App</h3>
-                    <div class="space-y-2">
-                        <a href="#" class="block">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Google_Play_Store_badge_EN.svg" alt="Google Play" class="w-32">
-                        </a>
-                        <a href="#" class="block">
-                            <img src="https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg" alt="App Store" class="w-32">
-                        </a>
-                    </div>
+                    <h3 class="text-lg font-semibold mb-4">Contáctanos</h3>
+                    <p class="text-gray-500 mb-2">
+                        <i class="fas fa-phone-alt text-green-500"></i> Soporte 24/7: +51 999 999 999
+                    </p>
+                    <p class="text-gray-500 mb-2">
+                        <i class="fas fa-envelope text-green-500"></i> Email: contacto@ecobazar.com
+                    </p>
+                    <p class="text-gray-500 mb-2">
+                        <i class="fas fa-map-marker-alt text-green-500"></i> Dirección: Calle Ejemplo 123, Ciudad, País
+                    </p>
                 </div>
             </div>
 
             <!-- Payment and Credits -->
-            <div class="mt-8 border-t border-gray-700 pt-6">
-                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-gray-400">
-                    <p class="mb-4 md:mb-0">Ecobazar eCommerce © 2021. All Rights Reserved</p>
+            <div class="mt-8 border-t border-gray-200 pt-6">
+                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-gray-500">
+                    <p class="mb-4 md:mb-0">Ecobazar eCommerce © 2024. Todos los derechos reservados</p>
                     <div class="flex space-x-4">
-                        <img src="{{ asset('images/tarjetas.png') }}" alt="Ecobazar Logo" class="w-22"> 
+                        <img src="{{ asset('images/tarjetas.png') }}" alt="Métodos de pago" class="w-22">
                     </div>
                 </div>
             </div>
         </footer>
+
+
 
     </div>
 

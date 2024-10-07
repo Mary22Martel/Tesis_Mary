@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id'); 
             $table->string('nombre', 255);
+            $table->string('medida', 100)->nullable();
             $table->text('descripcion')->nullable();
             $table->decimal('precio', 10, 2);
             $table->integer('cantidad_disponible');
