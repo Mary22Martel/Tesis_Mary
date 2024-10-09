@@ -10,7 +10,34 @@ class ProductoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except('tienda');
+        $this->middleware('auth')->except('tienda', 'buscarProductos');
+    }
+
+    public function buscarProductos(Request $request)
+    {
+        $query = $request->input('q');
+
+        if (!$query) {
+            return response()->json([
+                'productos' => []
+            ]);
+        }
+
+        // Buscar productos que coincidan con el término de búsqueda
+        $productos = Product::where('nombre', 'like', '%' . $query . '%')
+            ->orWhere('descripcion', 'like', '%' . $query . '%')
+            ->get();
+
+        // Si no se encuentran productos, devolver un array vacío
+        if ($productos->isEmpty()) {
+            return response()->json([
+                'productos' => []
+            ]);
+        }
+
+        return response()->json([
+            'productos' => $productos
+        ]);
     }
 
     // Función para autorizar roles
@@ -46,7 +73,7 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         // Autorizar solo a agricultores
-        $this->authorizeRoles(['agricultor']); 
+        $this->authorizeRoles(['agricultor']);
 
         $request->validate([
             'nombre' => 'required|string|max:255',
