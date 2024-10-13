@@ -42,8 +42,8 @@
                             @endif
                         </td>
                         <td class="py-4 px-6">{{ $producto->nombre }}</td>
-                        <td class="py-4 px-6">{{ $producto->medida }}</td>
-                        <td class="py-4 px-6">{{ $producto->categoria }}</td>
+                        <td class="py-4 px-6">{{ $producto->medida->nombre ?? 'N/A' }}</td> <!-- Mostrar nombre de la medida -->
+                        <td class="py-4 px-6">{{ $producto->categoria->nombre ?? 'N/A' }}</td> <!-- Mostrar nombre de la categoría -->
                         <td class="py-4 px-6">${{ number_format($producto->precio, 2) }}</td>
                         <td class="py-4 px-6">{{ $producto->cantidad_disponible }}</td>
                         <td class="py-4 px-6 flex space-x-4">
@@ -63,7 +63,7 @@
 
                 @if($productos->isEmpty())
                     <tr>
-                        <td colspan="6" class="text-center py-8 text-gray-600">
+                        <td colspan="7" class="text-center py-8 text-gray-600">
                             No tienes productos aún. <a href="{{ route('productos.create') }}" class="text-blue-500 underline">Crea uno aquí</a>.
                         </td>
                     </tr>

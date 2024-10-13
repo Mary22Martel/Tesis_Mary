@@ -12,12 +12,12 @@ class Product extends Model
     protected $fillable = [
         'user_id',
         'nombre',
-        'medida',
+        'medida_id',
         'descripcion',
         'precio',
         'cantidad_disponible',
         'imagen',
-        'categoria'
+        'categoria_id'
     ];
 
     protected $table = 'productos';
@@ -26,5 +26,14 @@ class Product extends Model
     public function usuario()
     {
         return $this->belongsTo(User::class);
+    }
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class);
+    }
+
+    public function medida()
+    {
+        return $this->belongsTo(Medida::class);
     }
 }

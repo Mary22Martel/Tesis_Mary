@@ -35,7 +35,11 @@
         <!-- Unidad de medida -->
         <div>
             <label for="medida" class="block text-lg font-semibold text-gray-700 mb-2">Unidad de medida</label>
-            <input type="text" name="medida" id="medida" value="{{ old('medida', $producto->medida) }}" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+            <select name="medida_id" id="medida" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">
+                @foreach ($medidas as $medida)
+                    <option value="{{ $medida->id }}" {{ $producto->medida_id == $medida->id ? 'selected' : '' }}>{{ $medida->nombre }}</option>
+                @endforeach
+            </select>
         </div>
 
         <!-- Precio y Cantidad (Grid para mejor distribución) -->
@@ -56,7 +60,11 @@
         <!-- Categoría -->
         <div>
             <label for="categoria" class="block text-lg font-semibold text-gray-700 mb-2">Categoría</label>
-            <input type="text" name="categoria" id="categoria" value="{{ old('categoria', $producto->categoria) }}" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400" required>
+            <select name="categoria_id" id="categoria" class="block w-full p-4 border border-gray-300 rounded-lg focus:ring-blue-400 focus:border-blue-400">
+                @foreach ($categorias as $categoria)
+                    <option value="{{ $categoria->id }}" {{ $producto->categoria_id == $categoria->id ? 'selected' : '' }}>{{ $categoria->nombre }}</option>
+                @endforeach
+            </select>
         </div>
 
         <!-- Imagen del Producto -->

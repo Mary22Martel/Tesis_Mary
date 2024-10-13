@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Course;
 use App\Models\User;
 
 use Illuminate\Http\Request;
@@ -18,11 +17,9 @@ class AdminController extends Controller
     {
         $this->authorizeRoles(['admin']);
 
-        $coursesCount = Course::count();
-        $usersCount = User::count();
         // Obtén otros datos necesarios para el dashboard aquí
 
-        return view('admin.dashboard', compact('coursesCount', 'usersCount'));
+        return view('admin.dashboard');
     }
 
     private function authorizeRoles($roles)

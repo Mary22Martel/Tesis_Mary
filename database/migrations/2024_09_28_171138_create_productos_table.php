@@ -10,18 +10,20 @@ return new class extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); 
+            $table->unsignedBigInteger('user_id');
             $table->string('nombre', 255);
-            $table->string('medida', 100)->nullable();
             $table->text('descripcion')->nullable();
             $table->decimal('precio', 10, 2);
             $table->integer('cantidad_disponible');
             $table->string('imagen')->nullable(); // Imagen del producto
-            $table->string('categoria'); // Categoría del producto
+            $table->unsignedBigInteger('categoria_id'); // Clave foránea a la tabla categorias
+            $table->unsignedBigInteger('medida_id'); // Clave foránea a la tabla medidas
             $table->timestamps();
 
-            // Clave foránea
+            // Claves foráneas
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('categoria_id')->references('id')->on('categorias')->onDelete('cascade');
+            $table->foreign('medida_id')->references('id')->on('medidas')->onDelete('cascade');
         });
     }
 

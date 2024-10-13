@@ -4,9 +4,9 @@
 <div class="container mx-auto mt-12 max-w-7xl">
     <h1 class="text-6xl font-extrabold text-center text-green-500 mb-12">Dashboard del Agricultor</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Tarjeta para gestionar productos -->
-        <div class="bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg p-8">
+    <div class="flex justify-center">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+    <div class="bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg p-8">
             <h4 class="text-2xl font-bold mb-4 text-gray-700">Gestionar Productos</h4>
             <p class="text-gray-600 mb-6">Aquí puedes ver y gestionar todos tus productos fácilmente.</p>
             <div class="flex flex-col space-y-4">
@@ -29,6 +29,7 @@
             </a>
         </div>
     </div>
+</div>
 </div>
 <br>
 <br>
