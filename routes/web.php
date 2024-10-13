@@ -19,10 +19,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('homepage');
 //     return view('tienda');
 // })->name('tienda');
 Route::get('/tienda', [ProductoController::class, 'tienda'])->name('tienda');
+Route::get('/buscar-productos', [ProductoController::class, 'buscarProductos'])->name('buscar.productos');
 Route::get('/productos/categoria/{categoria}', [ProductoController::class, 'filtrarPorCategoria'])->name('productos.filtrarPorCategoria');
 Route::get('/tienda/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
-
-
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -41,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/productos/{producto}/edit', [ProductoController::class, 'edit'])->name('productos.edit');
     Route::put('/productos/{producto}', [ProductoController::class, 'update'])->name('productos.update');
     Route::delete('/productos/{producto}', [ProductoController::class, 'destroy'])->name('productos.destroy');
+
 });
 
 // Grupo de rutas para la administración de categorías y medidas (solo admin)
