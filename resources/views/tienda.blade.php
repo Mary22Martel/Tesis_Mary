@@ -77,5 +77,70 @@
 
 @section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Maneja la acción de agregar al carrito
+    $('.add-to-cart-form').on('submit', function(e) {
+        e.preventDefault();
+        let form = $(this);
+        let actionUrl = form.attr('action');
 
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: form.serialize(),
+            success: function(response) {
+                // Actualizar el ícono del carrito con los nuevos valores
+                $('#cart-total-items').text(response.totalItems);
+                $('#cart-total-price').text(response.totalPrice.toFixed(2));
+
+                // Actualizar el contenido del carrito en el modal
+                $('#cart-items-list').append(`
+                    <div class="flex justify-between items-center mb-2">
+                        <span>${response.producto.nombre}</span>
+                        <span>${response.cantidad}</span>
+                        <span>S/${(response.producto.precio * response.cantidad).toFixed(2)}</span>
+                    </div>
+                `);
+
+                // Actualizar el total en el popup del carrito
+                $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
+
+                // Mostrar el mensaje de éxito
+                Swal.fire({
+                    title: 'Producto añadido al carrito!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                // Mostrar el modal del carrito
+                $('#cart-summary').removeClass('hidden');
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Hubo un problema al agregar el producto.',
+                    icon: 'error',
+                    showConfirmButton: true,
+                });
+            }
+        });
+    });
+
+    // Mostrar/Ocultar el resumen del carrito al hacer clic en el icono
+    $('#cart-button').on('click', function(event) {
+        event.preventDefault();
+        $('#cart-summary').toggleClass('hidden');
+    });
+
+    // Ocultar el modal si se hace clic fuera
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('#cart-button, #cart-summary').length) {
+            $('#cart-summary').addClass('hidden');
+        }
+    });
+});
+
+</script>
 @endsection

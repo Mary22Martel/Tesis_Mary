@@ -56,6 +56,16 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+#cart-summary {
+    position: absolute;
+    top: 50px; /* Ajusta la posición superior */
+    right: 0;
+    width: 300px; /* Ajusta el ancho si es necesario */
+    z-index: 1000;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 
 
 

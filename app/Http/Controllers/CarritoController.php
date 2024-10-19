@@ -15,57 +15,106 @@ class CarritoController extends Controller
     {
         $carrito = Carrito::where('user_id', Auth::id())->with('items.product')->first();
         return view('carrito.index', compact('carrito'));
+        $cartData = $this->loadCartData();
+    return view('tienda', compact('cartData'));
     }
 
     public function add(Request $request, $productId)
-{
-    $producto = Product::findOrFail($productId);
-    $carrito = Carrito::firstOrCreate(['user_id' => Auth::id()]);
-
-    $item = $carrito->items()->where('producto_id', $productId)->first();
-
-    if ($item) {
-        $item->cantidad += $request->input('cantidad', 1);
-        $item->save();
-    } else {
-        $item = CarritoItem::create([
-            'carrito_id' => $carrito->id,
-            'producto_id' => $productId,
-            'cantidad' => $request->input('cantidad', 1),
-        ]);
-    }
-
-    // Si la solicitud es AJAX, devolvemos una respuesta JSON
-    if ($request->ajax()) {
-        $carrito->load('items.product'); // Cargar relación para usar en la respuesta
-
-        $totalItems = $carrito->items->sum('cantidad');  // Total de productos en el carrito
+    {
+        $producto = Product::findOrFail($productId);
+        $carrito = Carrito::firstOrCreate(['user_id' => Auth::id()]);
+    
+        $item = $carrito->items()->where('producto_id', $productId)->first();
+    
+        if ($item) {
+            $item->cantidad += $request->input('cantidad', 1);
+            $item->save();
+        } else {
+            $item = CarritoItem::create([
+                'carrito_id' => $carrito->id,
+                'producto_id' => $productId,
+                'cantidad' => $request->input('cantidad', 1),
+            ]);
+        }
+    
+        // Recalcular el total del carrito
+        $totalItems = $carrito->items->sum('cantidad');
         $totalPrice = $carrito->items->sum(function ($item) {
             return $item->product->precio * $item->cantidad;
         });
-
-        // Preparar los items del carrito para enviar al frontend
-        $carritoItems = $carrito->items->map(function($item) {
-            return [
-                'nombre' => $item->product->nombre,
-                'cantidad' => $item->cantidad,
-                'precio' => $item->product->precio,
-            ];
-        });
-
+    
+        // Devolver datos en formato JSON
         return response()->json([
             'totalItems' => $totalItems,
             'totalPrice' => $totalPrice,
-            'carritoItems' => $carritoItems,
+            'items' => $carrito->items->map(function ($item) {
+                return [
+                    'nombre' => $item->product->nombre,
+                    'cantidad' => $item->cantidad,
+                    'subtotal' => $item->product->precio * $item->cantidad,
+                ];
+            }),
+        ]);
+    }
+    
+
+    // Controlador para cargar el carrito en la vista
+    public function loadCartData()
+    {
+        $carrito = Carrito::where('user_id', Auth::id())->with('items.product')->first();
+
+        $totalItems = 0;
+        $totalPrice = 0.00;
+
+        if ($carrito) {
+            $totalItems = $carrito->items->sum('cantidad');
+            $totalPrice = $carrito->items->sum(function ($item) {
+                return $item->product->precio * $item->cantidad;
+            });
+        }
+
+        return [
+            'totalItems' => $totalItems,
+            'totalPrice' => $totalPrice,
+        ];
+    }
+
+    public function getDetails()
+{
+    $carrito = Carrito::where('user_id', Auth::id())->with('items.product')->first();
+
+    if (!$carrito) {
+        return response()->json([
+            'items' => [],
+            'totalPrice' => 0.00,
+            'totalItems' => 0,
         ]);
     }
 
-    // Si no es AJAX, redirige al carrito (comportamiento normal)
-    return redirect()->route('carrito.index');
+    $items = $carrito->items->map(function ($item) {
+        return [
+            'nombre' => $item->product->nombre,
+            'cantidad' => $item->cantidad,
+            'subtotal' => $item->product->precio * $item->cantidad,
+        ];
+    });
+
+    $totalPrice = $carrito->items->sum(function ($item) {
+        return $item->product->precio * $item->cantidad;
+    });
+
+    $totalItems = $carrito->items->sum('cantidad');
+
+    return response()->json([
+        'items' => $items,
+        'totalPrice' => $totalPrice,
+        'totalItems' => $totalItems,
+    ]);
 }
 
 
 
+    
 
     public function remove($itemId)
     {
