@@ -18,21 +18,34 @@ class ProductoController extends Controller
     public function buscarProductos(Request $request)
     {
         $query = $request->input('q');
-
+        // Verificar si está recibiendo la consulta
         if (!$query) {
-            // Si no hay consulta de búsqueda, devolver todos los productos
+            // Devuelve todos los productos solo para pruebas
             $productos = Product::all();
         } else {
-            // Si hay consulta de búsqueda, filtrar los productos
+            // Realiza la búsqueda
             $productos = Product::where('nombre', 'like', '%' . $query . '%')
                 ->orWhere('descripcion', 'like', '%' . $query . '%')
                 ->get();
         }
-
-        return response()->json([
-            'productos' => $productos
-        ]);
+    
+        // Verificar si la búsqueda devuelve productos
+        if ($productos->isEmpty()) {
+            // Para depurar, ver los productos devueltos
+            return response()->json(['productos' => []], 200); 
+        }
+    
+        // Retorna la búsqueda exitosa
+        return response()->json(['productos' => $productos], 200);
     }
+    
+    public function show($id)
+    {
+        $producto = Product::findOrFail($id);
+        return view('productos.show', compact('producto'));
+    }
+    
+
 
 
     // Función para autorizar roles

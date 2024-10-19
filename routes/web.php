@@ -11,17 +11,17 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\Auth\AgricultorRegisterController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MedidaController;
+use App\Http\Controllers\CarritoController;
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('homepage');
-
-// Route::get('/tienda', function () {
-//     return view('tienda');
-// })->name('tienda');
 Route::get('/tienda', [ProductoController::class, 'tienda'])->name('tienda');
 Route::get('/buscar-productos', [ProductoController::class, 'buscarProductos'])->name('buscar.productos');
 Route::get('/productos/categoria/{categoria}', [ProductoController::class, 'filtrarPorCategoria'])->name('productos.filtrarPorCategoria');
 Route::get('/tienda/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
+Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -56,3 +56,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 //Login y Register para Agricultor
 Route::get('/agricultor/register', [AgricultorRegisterController::class, 'showRegistrationForm'])->name('agricultor.register');
 Route::post('/agricultor/register', [AgricultorRegisterController::class, 'register'])->name('agricultor.register.submit');
+
+
+// Rutas del carrito
+Route::middleware(['auth'])->group(function () {
+    Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
+    Route::post('/carrito/agregar/{productId}', [CarritoController::class, 'add'])->name('carrito.add');
+    Route::post('/carrito/eliminar/{itemId}', [CarritoController::class, 'remove'])->name('carrito.remove');
+    Route::post('/carrito/actualizar/{itemId}', [CarritoController::class, 'update'])->name('carrito.update');
+    Route::post('/carrito/agregar/{id}', [CarritoController::class, 'add'])->name('carrito.add');
+
+});

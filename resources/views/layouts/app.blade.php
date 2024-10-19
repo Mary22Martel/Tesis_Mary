@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-
-
-
     <!-- Tailwind CSS CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.5/dist/tailwind.min.css" rel="stylesheet">
 
@@ -16,6 +13,10 @@
     
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+     <!-- Incluye jQuery y SweetAlert2 al inicio, antes de tus scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
     
     @vite('resources/css/app.css')
 </head>
@@ -45,24 +46,24 @@
                         <a href="#" class="{{ request()->is('canastas') ? 'text-green-500 font-bold' : 'text-gray-500' }}">Canastas</a>
                     </li>
                     @auth
-                            @if(Auth::user()->role == 'repartidor')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('repartidor.dashboard') }}">{{ __('Repartidor Dashboard') }}</a>
-                                </li>
-                            @elseif(Auth::user()->role == 'agricultor')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('agricultor.dashboard') }}">{{ __('Agricultor Dashboard ') }}</a>
-                                </li>
-                            @elseif(Auth::user()->role == 'admin')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('Admin Dashboard') }}</a>
-                                </li>
-                            @elseif(Auth::user()->role == 'cliente')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('cliente.dashboard') }}">{{ __('Cliente Dashboard') }}</a>
-                                </li>
-                            @endif
-                        @endauth
+                        @if(Auth::user()->role == 'repartidor')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('repartidor.dashboard') }}">{{ __('Repartidor Dashboard') }}</a>
+                            </li>
+                        @elseif(Auth::user()->role == 'agricultor')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('agricultor.dashboard') }}">{{ __('Agricultor Dashboard ') }}</a>
+                            </li>
+                        @elseif(Auth::user()->role == 'admin')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}">{{ __('Admin Dashboard') }}</a>
+                            </li>
+                        @elseif(Auth::user()->role == 'cliente')
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('cliente.dashboard') }}">{{ __('Cliente Dashboard') }}</a>
+                            </li>
+                        @endif
+                    @endauth
                 </ul>
 
                 <!-- Right Side Navbar -->
@@ -93,14 +94,54 @@
                         </div>
                     @endguest
 
-                    <!-- Carrito de compras -->
-                    <a href="#" class="relative flex items-center text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-green-600">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18l-1.68 9.74a2 2 0 01-1.99 1.76H6.67a2 2 0 01-1.99-1.76L3 3z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21a2 2 0 100-4 2 2 0 000 4zm-8 0a2 2 0 100-4 2 2 0 000 4z" />
-                        </svg>
-                        <span class="ml-2 text-black font-bold">$57.00</span>
-                    </a>
+                    @php
+    use Illuminate\Support\Facades\Auth;
+    use App\Models\Carrito;
+
+    $carrito = null;
+    $totalItems = 0;
+    $totalPrice = 0.00;
+
+    if (Auth::check()) {
+        $carrito = Carrito::where('user_id', Auth::id())->with('items.product')->first();
+        if ($carrito) {
+            $totalItems = $carrito->items->sum('cantidad');
+            $totalPrice = $carrito->items->sum(function ($item) {
+                return $item->product->precio * $item->cantidad;
+            });
+        }
+    }
+@endphp
+
+
+                    <!-- Botón de carrito -->
+<a href="#" class="relative flex items-center text-gray-500" id="cart-button">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6 text-green-600">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18l-1.68 9.74a2 2 0 01-1.99 1.76H6.67a2 2 0 01-1.99-1.76L3 3z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21a2 2 0 100-4 2 2 0 000 4zm-8 0a2 2 0 100-4 2 2 0 000 4z" />
+    </svg>
+    <span id="cart-total-items" class="ml-2 text-black font-bold">{{ $totalItems }}</span>
+<span class="ml-2 text-black font-bold">S/<span id="cart-total-price">{{ number_format($totalPrice, 2) }}</span></span>
+
+</a>
+
+<!-- Modal del carrito -->
+<div id="cart-summary" class="absolute hidden right-0 mt-2 w-72 bg-white shadow-lg rounded-lg z-50">
+    <div class="p-4">
+        <div id="cart-items-list">
+            <!-- Los productos agregados al carrito se agregarán aquí dinámicamente -->
+        </div>
+        <div class="border-t pt-2">
+            <span>Total: S/<span id="cart-popup-total-price">0.00</span></span>
+        </div>
+        <div class="mt-4 text-right">
+            <a href="{{ route('carrito.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                Ver carrito
+            </a>
+        </div>
+    </div>
+</div>
+
                 </div>
             </div>
         </nav>
@@ -120,7 +161,7 @@
 
         <!-- Footer -->
         <footer class="bg-gray-100 text-gray-700 py-12 px-20">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div class="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
                 <!-- Logo y Descripción -->
                 <div>
                     <a href="#" class="flex items-center space-x-2 mb-4">
@@ -141,71 +182,11 @@
                         </a>
                     </div>
                 </div>
-                
-                <!-- Categorías de productos -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Categorías</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Frutas y Verduras</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Bebidas</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Lácteos y Huevos</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Cereales y Legumbres</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Productos Orgánicos</a></li>
-                    </ul>
-                </div>
 
-                <!-- Enlaces útiles -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Enlaces Útiles</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Inicio</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Sobre Nosotros</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Contacto</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Blog</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Términos y Condiciones</a></li>
-                    </ul>
-                </div>
+                <!-- Más contenido del footer -->
 
-                <!-- Centro de ayuda -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Centro de Ayuda</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Tu Pedido</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Tu Cuenta</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Rastreo de Pedido</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Lista de Deseos</a></li>
-                        <li><a href="#" class="text-gray-500 hover:text-green-500">Preguntas Frecuentes</a></li>
-                    </ul>
-                </div>
-
-                <!-- Información de Contacto -->
-                <div>
-                    <h3 class="text-lg font-semibold mb-4">Contáctanos</h3>
-                    <p class="text-gray-500 mb-2">
-                        <i class="fas fa-phone-alt text-green-500"></i> Soporte 24/7: +51 999 999 999
-                    </p>
-                    <p class="text-gray-500 mb-2">
-                        <i class="fas fa-envelope text-green-500"></i> Email: contacto@ecobazar.com
-                    </p>
-                    <p class="text-gray-500 mb-2">
-                        <i class="fas fa-map-marker-alt text-green-500"></i> Dirección: Calle Ejemplo 123, Ciudad, País
-                    </p>
-                </div>
-            </div>
-
-            <!-- Payment and Credits -->
-            <div class="mt-8 border-t border-gray-200 pt-6">
-                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-gray-500">
-                    <p class="mb-4 md:mb-0">Ecobazar eCommerce © 2024. Todos los derechos reservados</p>
-                    <div class="flex space-x-4">
-                        <img src="{{ asset('images/tarjetas.png') }}" alt="Métodos de pago" class="w-22">
-                    </div>
-                </div>
             </div>
         </footer>
-
-
-
     </div>
 
     <!-- Toggle Dropdown Script -->
@@ -222,10 +203,85 @@
                 userMenu.classList.add('hidden');
             }
         });
+
+        // Mostrar/Ocultar el resumen del carrito
+        document.getElementById('cart-button').addEventListener('click', function(event) {
+            event.preventDefault();  // Prevenir el comportamiento por defecto
+            const cartSummary = document.getElementById('cart-summary');
+            cartSummary.classList.toggle('hidden');  // Mostrar/ocultar el resumen del carrito
+        });
+
+
+        // Ocultar el dropdown si se hace clic fuera
+        document.addEventListener('click', function(event) {
+            const cartButton = document.getElementById('cart-button');
+            const cartSummary = document.getElementById('cart-summary');
+            if (!cartButton.contains(event.target) && !cartSummary.contains(event.target)) {
+                cartSummary.classList.add('hidden');
+            }
+        });
     </script>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    @vite(['resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <!-- Script para manejar el AJAX de agregar al carrito -->
+    <!-- Script para manejar el AJAX de agregar al carrito -->
+<script>
+$(document).ready(function() {
+    $('.add-to-cart-form').on('submit', function(e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let actionUrl = form.attr('action');
+
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: form.serialize(),
+            success: function(response) {
+                // Actualizar el ícono del carrito con los nuevos valores
+                $('#cart-total-items').text(response.totalItems);
+                $('#cart-total-price').text(response.totalPrice.toFixed(2));
+
+                // Actualizar el contenido del carrito en el modal
+                // Limpia el listado antes de volver a agregar los items
+                $('#cart-items-list').empty();
+                response.carritoItems.forEach(function(item) {
+                    $('#cart-items-list').append(`
+                        <div class="flex justify-between items-center mb-2">
+                            <span>${item.nombre}</span>
+                            <span>${item.cantidad}</span>
+                            <span>S/${(item.precio * item.cantidad).toFixed(2)}</span>
+                        </div>
+                    `);
+                });
+
+                // Actualizar el total en el popup del carrito
+                $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
+
+                // Mostrar un mensaje de éxito usando SweetAlert2
+                Swal.fire({
+                    title: 'Producto añadido al carrito!',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Hubo un problema al agregar el producto.',
+                    icon: 'error',
+                    showConfirmButton: true,
+                });
+            }
+        });
+    });
+});
+</script>
+
+    @yield('scripts')
 </body>
 </html>
