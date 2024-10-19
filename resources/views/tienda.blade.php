@@ -79,43 +79,58 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Maneja la acción de agregar al carrito
-    $('.add-to-cart-form').on('submit', function(e) {
-        e.preventDefault();
-        let form = $(this);
-        let actionUrl = form.attr('action');
+    // Evita el doble binding
+    $('.add-to-cart-form').off('submit').on('submit', function(e) {
+        e.preventDefault();  // Prevenir la recarga de la página
+
+        let form = $(this);  // Formulario específico que se envió
+        let actionUrl = form.attr('action');  // URL del formulario
 
         $.ajax({
             type: 'POST',
             url: actionUrl,
-            data: form.serialize(),
+            data: form.serialize(),  // Enviar los datos del formulario
             success: function(response) {
-                // Actualizar el ícono del carrito con los nuevos valores
-                $('#cart-total-items').text(response.totalItems);
-                $('#cart-total-price').text(response.totalPrice.toFixed(2));
+                if (response.totalItems !== undefined && response.totalPrice !== undefined) {
+                    // Actualizar el ícono del carrito con los nuevos valores
+                    $('#cart-total-items').text(response.totalItems);  // Número de productos en el carrito
+                    $('#cart-total-price').text(response.totalPrice.toFixed(2));  // Precio total
 
-                // Actualizar el contenido del carrito en el modal
-                $('#cart-items-list').append(`
-                    <div class="flex justify-between items-center mb-2">
-                        <span>${response.producto.nombre}</span>
-                        <span>${response.cantidad}</span>
-                        <span>S/${(response.producto.precio * response.cantidad).toFixed(2)}</span>
-                    </div>
-                `);
+                    // Limpiar el contenido anterior del modal del carrito
+                    $('#cart-items-list').empty();
 
-                // Actualizar el total en el popup del carrito
-                $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
+                    // Recorrer los productos agregados y mostrarlos en el modal
+                    response.items.forEach(function(item) {
+                        $('#cart-items-list').append(`
+                            <div class="flex justify-between items-center mb-2">
+                                <span>${item.nombre}</span>
+                                <span>${item.cantidad}</span>
+                                <span>S/${item.subtotal.toFixed(2)}</span>
+                            </div>
+                        `);
+                    });
 
-                // Mostrar el mensaje de éxito
-                Swal.fire({
-                    title: 'Producto añadido al carrito!',
-                    icon: 'success',
-                    showConfirmButton: false,
-                    timer: 1500
-                });
+                    // Actualizar el total en el modal del carrito
+                    $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
 
-                // Mostrar el modal del carrito
-                $('#cart-summary').removeClass('hidden');
+                    // Mostrar el mensaje de éxito con SweetAlert
+                    Swal.fire({
+                        title: 'Producto añadido al carrito!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    // Mostrar el modal del carrito
+                    $('#cart-summary').removeClass('hidden');
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'No se pudo agregar el producto. Intenta nuevamente.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                    });
+                }
             },
             error: function(xhr, status, error) {
                 Swal.fire({
@@ -127,20 +142,8 @@ $(document).ready(function() {
             }
         });
     });
-
-    // Mostrar/Ocultar el resumen del carrito al hacer clic en el icono
-    $('#cart-button').on('click', function(event) {
-        event.preventDefault();
-        $('#cart-summary').toggleClass('hidden');
-    });
-
-    // Ocultar el modal si se hace clic fuera
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('#cart-button, #cart-summary').length) {
-            $('#cart-summary').addClass('hidden');
-        }
-    });
 });
+
 
 </script>
 @endsection
