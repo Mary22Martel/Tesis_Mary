@@ -109,71 +109,90 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Evita el doble binding
     $('.add-to-cart-form').off('submit').on('submit', function(e) {
         e.preventDefault();  // Prevenir la recarga de la página
 
         let form = $(this);  // Formulario específico que se envió
-        let actionUrl = form.attr('action');  // URL del formulario
 
-        $.ajax({
-            type: 'POST',
-            url: actionUrl,
-            data: form.serialize(),  // Enviar los datos del formulario
-            success: function(response) {
-                if (response.totalItems !== undefined && response.totalPrice !== undefined) {
-                    // Actualizar el ícono del carrito con los nuevos valores
-                    $('#cart-total-items').text(response.totalItems);  // Número de productos en el carrito
-                    $('#cart-total-price').text(response.totalPrice.toFixed(2));  // Precio total
+        // Verificar si el usuario está autenticado mediante AJAX
+        $.get("{{ route('auth.check') }}", function(response) {
+            if (!response.authenticated) {
+                Swal.fire({
+                    title: 'Inicia sesión',
+                    text: 'Debes iniciar sesión para agregar productos al carrito.',
+                    icon: 'warning',
+                    showConfirmButton: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('login') }}";
+                    }
+                });
+                return;
+            }
 
-                    // Limpiar el contenido anterior del modal del carrito
-                    $('#cart-items-list').empty();
+            // Proceder con el envío si está autenticado
+            let actionUrl = form.attr('action');  // URL del formulario
 
-                    // Recorrer los productos agregados y mostrarlos en el modal
-                    response.items.forEach(function(item) {
-                        $('#cart-items-list').append(`
-                            <div class="flex justify-between items-center mb-2">
-                                <span>${item.nombre}</span>
-                                <span>${item.cantidad}</span>
-                                <span>S/${item.subtotal.toFixed(2)}</span>
-                            </div>
-                        `);
-                    });
+            $.ajax({
+                type: 'POST',
+                url: actionUrl,
+                data: form.serialize(),  // Enviar los datos del formulario
+                success: function(response) {
+                    if (response.totalItems !== undefined && response.totalPrice !== undefined) {
+                        // Actualizar el ícono del carrito con los nuevos valores
+                        $('#cart-total-items').text(response.totalItems);  // Número de productos en el carrito
+                        $('#cart-total-price').text(response.totalPrice.toFixed(2));  // Precio total
 
-                    // Actualizar el total en el modal del carrito
-                    $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
+                        // Limpiar el contenido anterior del modal del carrito
+                        $('#cart-items-list').empty();
 
-                    // Mostrar el mensaje de éxito con SweetAlert
-                    Swal.fire({
-                        title: 'Producto añadido al carrito!',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                        // Recorrer los productos agregados y mostrarlos en el modal
+                        response.items.forEach(function(item) {
+                            $('#cart-items-list').append(`
+                                <div class="flex justify-between items-center mb-2">
+                                    <span>${item.nombre}</span>
+                                    <span>${item.cantidad}</span>
+                                    <span>S/${item.subtotal.toFixed(2)}</span>
+                                </div>
+                            `);
+                        });
 
-                    // Mostrar el modal del carrito
-                    $('#cart-summary').removeClass('hidden');
-                } else {
+                        // Actualizar el total en el modal del carrito
+                        $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
+
+                        // Mostrar el mensaje de éxito con SweetAlert
+                        Swal.fire({
+                            title: 'Producto añadido al carrito!',
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                        // Mostrar el modal del carrito
+                        $('#cart-summary').removeClass('hidden');
+                    } else {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'No se pudo agregar el producto. Intenta nuevamente.',
+                            icon: 'error',
+                            showConfirmButton: true,
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
                     Swal.fire({
                         title: 'Error!',
-                        text: 'No se pudo agregar el producto. Intenta nuevamente.',
+                        text: 'Hubo un problema al agregar el producto.',
                         icon: 'error',
                         showConfirmButton: true,
                     });
                 }
-            },
-            error: function(xhr, status, error) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'Hubo un problema al agregar el producto.',
-                    icon: 'error',
-                    showConfirmButton: true,
-                });
-            }
+            });
         });
     });
 });
-
-
 </script>
+
+
+
 @endsection

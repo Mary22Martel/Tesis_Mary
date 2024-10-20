@@ -27,6 +27,16 @@
                     Gestionar Medidas
                 </a>
             </div>
+
+            <!-- Opción para gestionar canastas -->
+<div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300">
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">Gestionar Canastas</h2>
+    <p class="text-gray-600 mb-6">Crear, editar y eliminar canastas de productos.</p>
+    <a href="{{ route('admin.canastas.index') }}" class="block bg-purple-500 text-white font-semibold px-5 py-3 rounded-lg hover:bg-purple-600 transition-colors duration-300">
+        Gestionar Canastas
+    </a>
+</div>
+
         </div>
     </div>
 </div>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Models\Canasta;
+use App\Models\Categoria;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +19,10 @@ class AdminController extends Controller
     {
         $this->authorizeRoles(['admin']);
 
-        // Obtén otros datos necesarios para el dashboard aquí
+        $categorias = Categoria::all();
+        $canastas = Canasta::all(); 
 
-        return view('admin.dashboard');
+        return view('admin.dashboard', compact('categorias', 'canastas'));
     }
 
     private function authorizeRoles($roles)

@@ -12,9 +12,17 @@ use App\Models\Categoria;
 class ProductoController extends Controller
 {
     public function __construct()
-    {
-        $this->middleware('auth')->except('tienda', 'buscarProductos');
-    }
+{
+    $this->middleware('auth')->except([
+        'tienda',
+        'buscarProductos',
+        'show',
+        'filtrarPorCategoria',
+        'filtrarPorPrecio',
+        'buscar',
+        'filtrarPorProductor'
+    ]);
+}
 
     public function buscarProductos(Request $request)
     {

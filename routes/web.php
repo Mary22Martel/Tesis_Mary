@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\AgricultorRegisterController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MedidaController;
 use App\Http\Controllers\CarritoController;
+use App\Http\Controllers\CanastaController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -23,6 +24,10 @@ Route::get('/tienda/buscar', [ProductoController::class, 'buscar'])->name('produ
 Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
 Route::get('/productos/filtrar-precio', [ProductoController::class, 'filtrarPorPrecio'])->name('productos.filtrarPorPrecio');
 Route::get('/productos/productor/{id}', [ProductoController::class, 'filtrarPorProductor'])->name('productos.filtrarPorProductor');
+
+Route::get('/auth-check', function () {
+    return response()->json(['authenticated' => auth()->check()]);
+})->name('auth.check');
 
 
 
@@ -54,7 +59,16 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     
     // Rutas para medidas
     Route::resource('medidas', MedidaController::class);
+
+    // Rutas para canastas
+    Route::resource('canastas', CanastaController::class);
+    Route::get('/admin/canastas/create', [CanastaController::class, 'create'])->name('admin.canastas.create');
 });
+
+
+
+
+
 
 
 //Login y Register para Agricultor
@@ -72,3 +86,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/carrito/details', [CarritoController::class, 'getDetails'])->name('carrito.getDetails');
 
 });
+

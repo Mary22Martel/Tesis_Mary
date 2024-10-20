@@ -36,4 +36,12 @@ class Product extends Model
     {
         return $this->belongsTo(Medida::class);
     }
+    public function canastas()
+{
+    return $this->belongsToMany(Canasta::class, 'canasta_producto', 'producto_id', 'canasta_id')
+                ->withPivot('cantidad')
+                ->withTimestamps();
+}
+   
+
 }
