@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Medida;
@@ -188,12 +189,17 @@ class ProductoController extends Controller
     {
         // Obtener productos que pertenecen a la categoría seleccionada
         $productos = Product::where('categoria_id', $categoria->id)->get();
-
+    
         // Obtener todas las categorías para el sidebar
         $categorias = Categoria::all();
-
-        return view('tienda', compact('productos', 'categorias', 'categoria'));
+    
+        // Obtener todos los productores que tienen productos
+        $productores = User::whereHas('productos')->get();
+    
+        // Retornar la vista con los productos filtrados, las categorías y los productores
+        return view('tienda', compact('productos', 'categorias', 'productores', 'categoria'));
     }
+    
 
     // El método index para mostrar todos los productos y categorías
     public function tienda()
@@ -201,8 +207,9 @@ class ProductoController extends Controller
         // Obtener todos los productos disponibles
         $productos = Product::all(); 
         $categorias = Categoria::all();
+        $productores = User::whereHas('productos')->get();
 
-        return view('tienda', compact('productos', 'categorias'));
+        return view('tienda', compact('productos', 'categorias','productores'));
     }
 
     //Buscar
@@ -222,5 +229,36 @@ class ProductoController extends Controller
     // Retornar la vista de tienda con los productos encontrados
     return view('tienda', compact('productos', 'categorias'));
 }
+
+public function filtrarPorPrecio(Request $request)
+{
+    // Obtener el rango de precios del formulario
+    $min_price = $request->input('min_price', 1);
+    $max_price = $request->input('max_price', 1500);
+
+    // Filtrar productos según el rango de precios
+    $productos = Product::whereBetween('precio', [$min_price, $max_price])->get();
+
+    // Retornar la vista con los productos filtrados
+    return view('productos.index', compact('productos'));
+}
+
+public function filtrarPorProductor($idProductor)
+{
+    // Obtener los productos del productor específico
+    $productos = Product::where('user_id', $idProductor)->get();
+
+    // Obtener todas las categorías para el sidebar
+    $categorias = Categoria::all();
+
+    // Obtener todos los productores con productos
+    $productores = User::whereHas('productos')->get();
+
+    // Retornar la vista con los productos filtrados, las categorías y los productores
+    return view('tienda', compact('productos', 'categorias', 'productores'));
+}
+
+
+
 
 }

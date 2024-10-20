@@ -22,7 +22,37 @@
                 </li>
             @endforeach
         </ul>
+
+         <!-- Filtro por Precio -->
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-4">Filtrar por precio</h2>
+        <form action="{{ route('productos.filtrarPorPrecio') }}" method="GET">
+            <div class="flex justify-between">
+                <span>1</span>
+                <span>1500</span>
+            </div>
+            <input type="range" name="min_price" min="1" max="1500" value="{{ request()->get('min_price', 1) }}" class="w-full">
+            <input type="range" name="max_price" min="50" max="1500" value="{{ request()->get('max_price', 1500) }}" class="w-full">
+            <button type="submit" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg w-full hover:bg-green-600">Filtrar</button>
+        </form>
     </div>
+
+    <div class="mt-8">
+    <h2 class="text-xl font-bold mb-4">Productores</h2>
+    <ul class="space-y-2">
+        @foreach($productores as $productor)
+            <li>
+                <a href="{{ route('productos.filtrarPorProductor', $productor->id) }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-colors duration-200">
+                    <span class="ml-3">{{ $productor->name }}</span>
+                </a>
+            </li>
+        @endforeach
+    </ul>
+</div>
+
+    </div>
+
+   
 
     <!-- Productos -->
     <div class="w-3/4 p-4">

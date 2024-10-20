@@ -21,6 +21,10 @@ Route::get('/buscar-productos', [ProductoController::class, 'buscarProductos'])-
 Route::get('/productos/categoria/{categoria}', [ProductoController::class, 'filtrarPorCategoria'])->name('productos.filtrarPorCategoria');
 Route::get('/tienda/buscar', [ProductoController::class, 'buscar'])->name('productos.buscar');
 Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
+Route::get('/productos/filtrar-precio', [ProductoController::class, 'filtrarPorPrecio'])->name('productos.filtrarPorPrecio');
+Route::get('/productos/productor/{id}', [ProductoController::class, 'filtrarPorProductor'])->name('productos.filtrarPorProductor');
+
+
 
 Auth::routes();
 

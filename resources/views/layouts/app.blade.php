@@ -184,9 +184,6 @@
                         </a>
                     </div>
                 </div>
-
-                <!-- Más contenido del footer -->
-
             </div>
         </footer>
     </div>
