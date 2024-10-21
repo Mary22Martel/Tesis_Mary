@@ -24,29 +24,29 @@ class ProductoController extends Controller
     ]);
 }
 
-    public function buscarProductos(Request $request)
-    {
-        $query = $request->input('q');
-        // Verificar si está recibiendo la consulta
-        if (!$query) {
-            // Devuelve todos los productos solo para pruebas
-            $productos = Product::all();
-        } else {
-            // Realiza la búsqueda
-            $productos = Product::where('nombre', 'like', '%' . $query . '%')
-                ->orWhere('descripcion', 'like', '%' . $query . '%')
-                ->get();
-        }
-    
-        // Verificar si la búsqueda devuelve productos
-        if ($productos->isEmpty()) {
-            // Para depurar, ver los productos devueltos
-            return response()->json(['productos' => []], 200); 
-        }
-    
-        // Retorna la búsqueda exitosa
-        return response()->json(['productos' => $productos], 200);
+public function buscarProductos(Request $request)
+{
+    $query = $request->input('q');
+
+    // Verificar si está recibiendo la consulta
+    if (!$query) {
+        // Si no se envía ninguna consulta, devuelve todos los productos
+        $productos = Product::all();
+    } else {
+        // Realiza la búsqueda
+        $productos = Product::where('nombre', 'like', '%' . $query . '%')
+            ->orWhere('descripcion', 'like', '%' . $query . '%')
+            ->get();
     }
+
+    // Obtener todas las categorías para el sidebar
+    $categorias = Categoria::all();
+    $productores = User::whereHas('productos')->get();
+
+    // Retornar la vista de tienda con los productos encontrados
+    return view('tienda', compact('productos', 'categorias', 'productores'));
+}
+
     
     public function show($id)
     {

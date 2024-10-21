@@ -32,6 +32,14 @@
 <div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300">
     <h2 class="text-2xl font-bold text-gray-700 mb-4">Gestionar Canastas</h2>
     <p class="text-gray-600 mb-6">Crear, editar y eliminar canastas de productos.</p>
+            <div class="flex flex-col space-y-4">
+                <a href="{{ route('admin.canastas.index') }}" class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out text-center">
+                    Ver Mis Canastas
+                </a>
+                <a href="{{ route('admin.canastas.create') }}" class="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out text-center">
+                    Crear Canasta
+                </a>
+            </div>
     <a href="{{ route('admin.canastas.index') }}" class="block bg-purple-500 text-white font-semibold px-5 py-3 rounded-lg hover:bg-purple-600 transition-colors duration-300">
         Gestionar Canastas
     </a>

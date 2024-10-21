@@ -44,7 +44,7 @@
                         <td class="py-4 px-6">{{ $producto->nombre }}</td>
                         <td class="py-4 px-6">{{ $producto->medida->nombre ?? 'N/A' }}</td> <!-- Mostrar nombre de la medida -->
                         <td class="py-4 px-6">{{ $producto->categoria->nombre ?? 'N/A' }}</td> <!-- Mostrar nombre de la categoría -->
-                        <td class="py-4 px-6">${{ number_format($producto->precio, 2) }}</td>
+                        <td class="py-4 px-6">S/{{ number_format($producto->precio, 2) }}</td>
                         <td class="py-4 px-6">{{ $producto->cantidad_disponible }}</td>
                         <td class="py-4 px-6 flex space-x-4">
                             <a href="{{ route('productos.edit', $producto) }}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-300 ease-in-out">

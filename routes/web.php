@@ -65,12 +65,6 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/admin/canastas/create', [CanastaController::class, 'create'])->name('admin.canastas.create');
 });
 
-
-
-
-
-
-
 //Login y Register para Agricultor
 Route::get('/agricultor/register', [AgricultorRegisterController::class, 'showRegistrationForm'])->name('agricultor.register');
 Route::post('/agricultor/register', [AgricultorRegisterController::class, 'register'])->name('agricultor.register.submit');

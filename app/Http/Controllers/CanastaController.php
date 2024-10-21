@@ -24,43 +24,49 @@ class CanastaController extends Controller
 
 public function store(Request $request)
 {
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'precio' => 'required|numeric',
-        'descripcion' => 'nullable|string',
-    ]);
-
+    // Primero creamos la canasta
     $canasta = Canasta::create($request->only(['nombre', 'precio', 'descripcion']));
 
-    // Guardar productos seleccionados en la canasta
-    if ($request->has('productos')) {
-        foreach ($request->productos as $productoId => $detalle) {
-            $canasta->productos()->attach($productoId, ['cantidad' => $detalle['cantidad']]);
+    // Obtenemos los productos seleccionados
+    $productos = $request->input('productos', []);
+
+    // Si hay productos seleccionados, los agregamos a la canasta
+    if (!empty($productos)) {
+        foreach ($productos as $productoId => $productoData) {
+            $canasta->productos()->attach($productoId, ['cantidad' => $productoData['cantidad']]);
         }
     }
 
-    return redirect()->route('admin.canastas.index')->with('success', 'Canasta creada con éxito.');
+    return redirect()->route('admin.canastas.index')->with('success', 'Canasta creada correctamente.');
 }
 
 
+public function edit(Canasta $canasta)
+{
+    $productos = Product::all(); // Asegúrate de obtener todos los productos
+    return view('admin.canastas.edit', compact('canasta', 'productos'));
+}
 
-    public function edit(Canasta $canasta)
-    {
-        return view('admin.canastas.edit', compact('canasta'));
+
+public function update(Request $request, Canasta $canasta)
+{
+    // Primero actualizamos la canasta
+    $canasta->update($request->only(['nombre', 'precio', 'descripcion']));
+
+    // Sincronizamos los productos con la canasta (eliminando los que ya no están seleccionados)
+    $productos = $request->input('productos', []);
+    $syncData = [];
+
+    if (!empty($productos)) {
+        foreach ($productos as $productoId => $productoData) {
+            $syncData[$productoId] = ['cantidad' => $productoData['cantidad']];
+        }
     }
 
-    public function update(Request $request, Canasta $canasta)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'precio' => 'required|numeric',
-            'descripcion' => 'nullable|string',
-        ]);
+    $canasta->productos()->sync($syncData);
 
-        $canasta->update($request->all());
-
-        return redirect()->route('admin.canastas.index')->with('success', 'Canasta actualizada con éxito.');
-    }
+    return redirect()->route('admin.canastas.index')->with('success', 'Canasta actualizada correctamente.');
+}
 
     public function destroy(Canasta $canasta)
     {
