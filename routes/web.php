@@ -24,6 +24,8 @@ Route::get('/tienda/buscar', [ProductoController::class, 'buscar'])->name('produ
 Route::get('/producto/{id}', [ProductoController::class, 'show'])->name('producto.show');
 Route::get('/productos/filtrar-precio', [ProductoController::class, 'filtrarPorPrecio'])->name('productos.filtrarPorPrecio');
 Route::get('/productos/productor/{id}', [ProductoController::class, 'filtrarPorProductor'])->name('productos.filtrarPorProductor');
+Route::get('/buscar-productos/ajax', [ProductoController::class, 'buscarProductosAjax'])->name('buscar.productos.ajax');
+
 
 Route::get('/auth-check', function () {
     return response()->json(['authenticated' => auth()->check()]);

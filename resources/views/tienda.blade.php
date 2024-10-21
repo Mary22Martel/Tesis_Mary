@@ -57,32 +57,36 @@
     <!-- Productos -->
     <div class="w-3/4 p-4">
         <!-- Formulario de búsqueda -->
+<!-- Formulario de búsqueda -->
 <div class="relative w-full">
-    <form action="{{ route('buscar.productos') }}" method="GET" class="flex items-center">
-        <input type="text" id="search" name="q" placeholder="Buscar productos..." value="{{ request('q') }}" class="border rounded-lg p-2 w-1/2 mr-2">
-        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Buscar</button>
-    </form>
+    <input type="text" id="search" name="query" placeholder="Buscar productos..." class="border rounded-lg p-2 w-1/2">
     <div id="search-results" class="absolute w-1/2 bg-white shadow-lg z-50 mt-1 rounded-lg hidden">
         <!-- Los resultados de búsqueda se agregarán dinámicamente aquí -->
     </div>
 </div>
 
+
         <!-- Mostrar los productos dinámicamente -->
+<!-- Mostrar los productos dinámicamente -->
 <div class="grid grid-cols-4 gap-6 mt-4">
     @if($productos->isEmpty())
-        <p>No hay productos disponibles con ese término de búsqueda.</p>
+        <p>No hay productos disponibles en este momento.</p>
     @else
         @foreach ($productos as $producto)
         <div class="block bg-white shadow-lg rounded-lg p-4 transition hover:shadow-xl">
-            @if($producto->imagen)
-                <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="mb-4 w-full h-48 object-cover rounded-lg">
-            @else
-                <div class="mb-4 w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
-                    Sin imagen
-                </div>
-            @endif
+            <a href="{{ route('producto.show', $producto->id) }}">
+                @if($producto->imagen)
+                    <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="mb-4 w-full h-48 object-cover rounded-lg">
+                @else
+                    <div class="mb-4 w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
+                        Sin imagen
+                    </div>
+                @endif
+            </a>
 
-            <h3 class="font-bold text-lg">{{ $producto->nombre }}</h3>
+            <a href="{{ route('producto.show', $producto->id) }}">
+                <h3 class="font-bold text-lg">{{ $producto->nombre }}</h3>
+            </a>
             <p class="text-gray-500">S/{{ number_format($producto->precio, 2) }}</p>
             <p class="text-sm text-gray-400">Disponibles: {{ $producto->cantidad_disponible }}</p>
 
@@ -99,6 +103,7 @@
     @endif
 </div>
 
+
     </div>
 </div>
 
@@ -114,6 +119,52 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
+    // Manejo del evento de búsqueda en tiempo real
+    $('#search').on('input', function() {
+        let query = $(this).val();
+
+        if (query.length > 2) { // Realizar la búsqueda si hay más de 2 caracteres
+            $.ajax({
+                url: "{{ route('buscar.productos.ajax') }}",
+                method: 'GET',
+                data: { q: query },
+                success: function(response) {
+                    let searchResults = $('#search-results');
+                    searchResults.empty(); // Limpiar resultados anteriores
+
+                    if (response.length > 0) {
+                        searchResults.removeClass('hidden');
+
+                        response.forEach(function(product) {
+                            let productItem = `
+                                <a href="/producto/${product.id}" class="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
+                                    <img src="/storage/${product.imagen}" alt="${product.nombre}" class="w-10 h-10 mr-2">
+                                    <div>
+                                        <p class="font-semibold">${product.nombre}</p>
+                                        <p class="text-sm text-gray-600">S/${product.precio}</p>
+                                    </div>
+                                </a>
+                            `;
+                            searchResults.append(productItem);
+                        });
+                    } else {
+                        searchResults.append('<p class="p-2 text-gray-500">No se encontraron productos</p>');
+                    }
+                }
+            });
+        } else {
+            $('#search-results').addClass('hidden');
+        }
+    });
+
+    // Opción para cerrar el contenedor si el usuario hace clic fuera de él
+    $(document).click(function(event) {
+        if (!$(event.target).closest('#search, #search-results').length) {
+            $('#search-results').addClass('hidden');
+        }
+    });
+
+    // Manejo del formulario "Agregar al carrito"
     $('.add-to-cart-form').off('submit').on('submit', function(e) {
         e.preventDefault();  // Prevenir la recarga de la página
 
@@ -196,5 +247,7 @@ $(document).ready(function() {
         });
     });
 });
+
 </script>
 @endsection
+

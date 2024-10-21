@@ -47,6 +47,18 @@ public function buscarProductos(Request $request)
     return view('tienda', compact('productos', 'categorias', 'productores'));
 }
 
+public function buscarProductosAjax(Request $request)
+{
+    $query = $request->input('q');
+
+    $productos = Product::where('nombre', 'like', '%' . $query . '%')
+        ->orWhere('descripcion', 'like', '%' . $query . '%')
+        ->get();
+
+    return response()->json($productos);
+}
+
+
     
     public function show($id)
     {
