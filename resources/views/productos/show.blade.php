@@ -47,16 +47,6 @@
                 </div>
             </div>
 
-            <!-- Opciones adicionales (como peso) -->
-            <div class="flex items-center space-x-4">
-                <p class="font-semibold">Peso:</p>
-                <div class="flex space-x-2">
-                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg">1/2 KG</button>
-                    <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">1 KG</button>
-                    <button class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">1.5 KG</button>
-                </div>
-            </div>
-
             <!-- Botones de acción -->
             <div class="flex space-x-4 mt-6">
                 <a href="{{ route('tienda') }}" class="inline-block bg-transparent text-green-600 border border-green-600 px-4 py-2 rounded-lg hover:bg-green-100">
@@ -64,13 +54,13 @@
                 </a>
 
                 <!-- Formulario para agregar al carrito -->
-                <form action="{{ route('carrito.add', $producto->id) }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="cantidad" id="cantidadInput" value="1">
-                    <button type="submit" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                        Añadir a Carrito
-                    </button>
-                </form>
+                <form class="add-to-cart-form mt-2" action="{{ route('carrito.add', $producto->id) }}" method="POST">
+                @csrf
+                <input type="hidden" name="cantidad" value="1">
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg w-full hover:bg-green-600">
+                    Agregar al carrito
+                </button>
+            </form>
             </div>
         </div>
     </div>

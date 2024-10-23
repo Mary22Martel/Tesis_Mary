@@ -43,6 +43,7 @@
                     <li>
                         <a href="#" class="{{ request()->is('canastas') ? 'text-green-500 font-bold' : 'text-gray-500' }}">Canastas</a>
                     </li>
+               
                     @auth
                         @if(Auth::user()->role == 'repartidor')
                             <li class="nav-item">
@@ -124,26 +125,29 @@
             </a>
 
             <!-- Modal del carrito -->
-        <div id="cart-summary" class="fixed hidden right-4 top-16 w-72 bg-white shadow-lg rounded-lg z-50">
-            <div class="p-4">
-                <!-- Lista de productos en el carrito -->
-                <div id="cart-items-list">
-                    <!-- Aquí se añadirán los productos dinámicamente -->
-                </div>
-                
-                <!-- Total en el carrito -->
-                <div class="border-t pt-2">
-                    <span>Total: S/<span id="cart-popup-total-price">0.00</span></span>
-                </div>
-                
-                <!-- Enlace para ver el carrito completo -->
-                <div class="mt-4 text-right">
-                    <a href="{{ route('carrito.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
-                        Ver carrito
-                    </a>
+            <div id="cart-summary" class="fixed hidden right-4 top-16 w-80 bg-white shadow-lg rounded-lg z-50">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold mb-4">Carrito de Compras</h3>
+                    
+                    <!-- Lista de productos en el carrito -->
+                    <div id="cart-items-list">
+                        <!-- Aquí se añadirán los productos dinámicamente -->
+                    </div>
+                    
+                    <!-- Total en el carrito -->
+                    <div class="border-t pt-2 mt-4">
+                        <span class="font-bold">Total: S/<span id="cart-popup-total-price">0.00</span></span>
+                    </div>
+                    
+                    <!-- Enlace para ver el carrito completo -->
+                    <div class="mt-4 text-right">
+                        <a href="{{ route('carrito.index') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                            Ver carrito de compras
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
+
             </div>
         </div>
         </nav>
@@ -163,7 +167,7 @@
 
         <!-- Footer -->
         <footer class="bg-gray-100 text-gray-700 py-12 px-20">
-            <div class="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8">
+            <div class="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 " >
                 <!-- Logo y Descripción -->
                 <div>
                     <a href="#" class="flex items-center space-x-2 mb-4">
@@ -184,8 +188,60 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Categorías -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Categorías</h3>
+                    <ul class="space-y-2">
+                        <li><a href="{{ route('tienda') }}" class="text-gray-500 hover:text-green-500">Todo</a></li>
+                        @foreach($categorias as $cat)
+                            <li>
+                                <a href="{{ route('productos.filtrarPorCategoria', $cat->id) }}" class="text-gray-500 hover:text-green-500">
+                                    {{ $cat->nombre }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                <!-- Enlaces útiles -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Enlaces Útiles</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Inicio</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Sobre Nosotros</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Contacto</a></li>
+                        <li><a href="#" class="text-gray-500 hover:text-green-500">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contáctanos</h3>
+                    <p class="text-gray-500 mb-2">
+                        <i class="fas fa-phone-alt text-green-500"></i> Soporte 24/7: +51 999 999 999
+                    </p>
+                    <p class="text-gray-500 mb-2">
+                        <i class="fas fa-envelope text-green-500"></i> Email: contacto@ecobazar.com
+                    </p>
+                    <p class="text-gray-500 mb-2">
+                        <i class="fas fa-map-marker-alt text-green-500"></i> Dirección: Calle Ejemplo 123, Ciudad, País
+                    </p>
+                    
+                </div>
+            </div>
+
+            <!-- Payment and Credits -->
+            <div class="mt-8 border-t border-gray-200 pt-6">
+                <div class="container mx-auto flex flex-col md:flex-row justify-between items-center text-gray-500">
+                    <p class="mb-4 md:mb-0">Ecobazar eCommerce © 2024. Todos los derechos reservados</p>
+                    <div class="flex space-x-4">
+                        <img src="{{ asset('images/tarjetas.png') }}" alt="Métodos de pago" class="w-22">
+                    </div>
+                </div>
             </div>
         </footer>
+
     </div>
 
     <!-- Toggle Dropdown Script -->
@@ -227,79 +283,86 @@
 
     <!-- Script para manejar el AJAX de agregar al carrito -->
     <script>
-        $(document).ready(function() {
-                // Maneja la acción de agregar al carrito
-                $('.add-to-cart-form').on('submit', function(e) {
-                    e.preventDefault();  // Prevenir la recarga de la página
+   $(document).ready(function() {
+    // Maneja la acción de agregar al carrito
+    $('.add-to-cart-form').on('submit', function(e) {
+        e.preventDefault();  // Prevenir la recarga de la página
 
-                    let form = $(this);  // Formulario específico que se envió
-                    let actionUrl = form.attr('action');  // URL del formulario
+        let form = $(this);  // Formulario específico que se envió
+        let actionUrl = form.attr('action');  // URL del formulario
 
-                    $.ajax({
-                        type: 'POST',
-                        url: actionUrl,
-                        data: form.serialize(),  // Enviar los datos del formulario
-                        success: function(response) {
-                            // Verificar que la respuesta del servidor tenga los datos esperados
-                            if (response.totalItems !== undefined && response.totalPrice !== undefined) {
-                                // Actualizar el ícono del carrito con los nuevos valores
-                                $('#cart-total-items').text(response.totalItems);  // Número de productos en el carrito
-                                $('#cart-total-price').text(response.totalPrice.toFixed(2));  // Precio total
+        $.ajax({
+            type: 'POST',
+            url: actionUrl,
+            data: form.serialize(),  // Enviar los datos del formulario
+            success: function(response) {
+                // Verificar que la respuesta del servidor tenga los datos esperados
+                if (response.totalItems !== undefined && response.totalPrice !== undefined) {
+                    // Actualizar el ícono del carrito con los nuevos valores
+                    $('#cart-total-items').text(response.totalItems);  // Número de productos en el carrito
+                    $('#cart-total-price').text(response.totalPrice.toFixed(2));  // Precio total
 
-                                // Limpiar el contenido anterior del modal del carrito
-                                $('#cart-items-list').empty();
+                    // Limpiar el contenido anterior del modal del carrito
+                    $('#cart-items-list').empty();
 
-                                // Recorrer los productos agregados y mostrarlos en el modal
-                                response.items.forEach(function(item) {
-                                    $('#cart-items-list').append(`
-                                        <div class="flex justify-between items-center mb-2">
-                                            <span>${item.nombre}</span>
-                                            <span>${item.cantidad}</span>
-                                            <span>S/${item.subtotal.toFixed(2)}</span>
-                                        </div>
-                                    `);
-                                });
-
-                                // Actualizar el total en el modal del carrito
-                                $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
-
-                                // Mostrar el mensaje de éxito con SweetAlert
-                                Swal.fire({
-                                    title: 'Producto añadido al carrito!',
-                                    icon: 'success',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
-
-                                // Mostrar el modal del carrito
-                                $('#cart-summary').removeClass('hidden');
-                            } else {
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'No se pudo agregar el producto. Intenta nuevamente.',
-                                    icon: 'error',
-                                    showConfirmButton: true,
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'Hubo un problema al agregar el producto.',
-                                icon: 'error',
-                                showConfirmButton: true,
-                            });
-                        }
+                    // Recorrer los productos agregados y mostrarlos en el modal
+                    response.items.forEach(function(item) {
+                        $('#cart-items-list').append(`
+                            <div class="flex items-center mb-4">
+                                <div class="flex-1 ml-4">
+                                    <h4 class="font-bold">${item.nombre}</h4>
+                                    <p class="text-gray-500">Cantidad: ${item.cantidad}</p>
+                                    <p class="text-green-500">S/${item.subtotal.toFixed(2)}</p>
+                                </div>
+                                <button class="text-red-500 hover:text-red-700" onclick="removeItem(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `);
                     });
+
+                    // Actualizar el total en el modal del carrito
+                    $('#cart-popup-total-price').text(response.totalPrice.toFixed(2));
+
+                    // Mostrar el mensaje de éxito con SweetAlert
+                    Swal.fire({
+                        title: 'Producto añadido al carrito!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    // Mostrar el modal del carrito
+                    $('#cart-summary').removeClass('hidden');
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'No se pudo agregar el producto. Intenta nuevamente.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Hubo un problema al agregar el producto.',
+                    icon: 'error',
+                    showConfirmButton: true,
                 });
+            }
+        });
+    });
+});
 
-                // Mostrar/Ocultar el resumen del carrito al hacer clic en el ícono del carrito o el monto
-                $('#cart-button, #cart-total-price').on('click', function(event) {
-                    event.preventDefault();  // Prevenir el comportamiento predeterminado del enlace
-                    $('#cart-summary').toggleClass('hidden');  // Mostrar u ocultar el modal del carrito
 
-                    // Realizar una llamada AJAX para actualizar los detalles del carrito
-                    $.ajax({
+        // Mostrar/Ocultar el resumen del carrito al hacer clic en el ícono del carrito o el monto
+        $('#cart-button, #cart-total-price').on('click', function(event) {
+            event.preventDefault();  // Prevenir el comportamiento predeterminado del enlace
+            $('#cart-summary').toggleClass('hidden');  // Mostrar u ocultar el modal del carrito
+
+            // Realizar una llamada AJAX para actualizar los detalles del carrito
+            $.ajax({
                 type: 'GET',
                 url: '{{ route("carrito.getDetails") }}',
                 success: function(response) {
@@ -309,10 +372,15 @@
                     // Recorrer los productos y agregarlos al modal
                     response.items.forEach(function(item) {
                         $('#cart-items-list').append(`
-                            <div class="flex justify-between items-center mb-2">
-                                <span>${item.nombre}</span>
-                                <span>${item.cantidad}</span>
-                                <span>S/${item.subtotal.toFixed(2)}</span>
+                            <div class="flex items-center mb-4">
+                                <div class="flex-1">
+                                    <h4 class="font-bold">${item.nombre}</h4>
+                                    <p class="text-gray-500">Cantidad: ${item.cantidad}</p>
+                                    <p class="text-green-500">S/${item.subtotal.toFixed(2)}</p>
+                                </div>
+                                <button class="text-red-500 hover:text-red-700" onclick="removeItem(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         `);
                     });
@@ -329,15 +397,55 @@
                     });
                 }
             });
-            });
-            // Ocultar el modal si se hace clic fuera de él
-            $(document).on('click', function(event) {
-                if (!$(event.target).closest('#cart-button, #cart-summary').length) {
-                    $('#cart-summary').addClass('hidden');  // Ocultar el modal
-                }
-            });
         });
-    </script>
+
+        // Ocultar el modal si se hace clic fuera de él
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('#cart-button, #cart-summary').length) {
+                $('#cart-summary').addClass('hidden');  // Ocultar el modal
+            }
+        });
+    
+
+    // Función para eliminar un producto del carrito
+    function removeItem(itemId) {
+        $.ajax({
+            type: 'POST',
+            url: `/carrito/eliminar/${itemId}`,
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Producto eliminado del carrito!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#cart-button, #cart-total-price').click();  // Actualizar el carrito
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'No se pudo eliminar el producto del carrito. Intenta nuevamente.',
+                        icon: 'error',
+                        showConfirmButton: true,
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Hubo un problema al eliminar el producto.',
+                    icon: 'error',
+                    showConfirmButton: true,
+                });
+            }
+        });
+    }
+</script>
+
+
 
 
     @yield('scripts')

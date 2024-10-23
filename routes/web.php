@@ -13,6 +13,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\MedidaController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CanastaController;
+use App\Http\Controllers\OrderController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -80,6 +81,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/carrito/actualizar/{itemId}', [CarritoController::class, 'update'])->name('carrito.update');
    // Route::post('/carrito/agregar/{id}', [CarritoController::class, 'add'])->name('carrito.add');
     Route::get('/carrito/details', [CarritoController::class, 'getDetails'])->name('carrito.getDetails');
+    Route::get('/checkout', [CarritoController::class, 'checkout'])->name('checkout');
 
 });
+
+Route::middleware(['auth'])->group(function () {
+Route::post('/orden', [OrderController::class, 'store'])->name('order.store');
+//Route::get('/orden-exito', [OrderController::class, 'success'])->name('order.success');
+Route::get('/orden-exito/{orderId}', [OrderController::class, 'success'])->name('order.success');
+Route::get('/orden-voucher/{orderId}', [OrderController::class, 'downloadVoucher'])->name('order.voucher');
+});
+
 

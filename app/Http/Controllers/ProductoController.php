@@ -223,14 +223,17 @@ public function buscarProductosAjax(Request $request)
 
     // El método index para mostrar todos los productos y categorías
     public function tienda()
-    {
-        // Obtener todos los productos disponibles
-        $productos = Product::all(); 
-        $categorias = Categoria::all();
-        $productores = User::whereHas('productos')->get();
+{
+    // Obtener todos los productos disponibles con la URL de la imagen completa
+    $productos = Product::all()->map(function ($producto) {
+        $producto->imagen_url = $producto->imagen ? asset('storage/productos/' . $producto->imagen) : asset('images/default-product.png');
+        return $producto;
+    });
+    $categorias = Categoria::all();
+    $productores = User::whereHas('productos')->get();
 
-        return view('tienda', compact('productos', 'categorias','productores'));
-    }
+    return view('tienda', compact('productos', 'categorias', 'productores'));
+}
 
     //Buscar
     public function buscar(Request $request)

@@ -23,7 +23,7 @@
             @endforeach
         </ul>
 
-         <!-- Filtro por Precio -->
+         <!-- Filtro por Precio
     <div class="mt-8">
         <h2 class="text-xl font-bold mb-4">Filtrar por precio</h2>
         <form action="{{ route('productos.filtrarPorPrecio') }}" method="GET">
@@ -35,7 +35,7 @@
             <input type="range" name="max_price" min="50" max="1500" value="{{ request()->get('max_price', 1500) }}" class="w-full">
             <button type="submit" class="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg w-full hover:bg-green-600">Filtrar</button>
         </form>
-    </div>
+    </div> -->
 
     <div class="mt-8">
     <h2 class="text-xl font-bold mb-4">Productores</h2>
