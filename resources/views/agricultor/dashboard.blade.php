@@ -28,6 +28,18 @@
                 Ver Otras Funciones
             </a>
         </div>
+
+         <!-- Nueva tarjeta para gestionar pedidos -->
+         <div class="bg-white shadow-md hover:shadow-lg transition-shadow rounded-lg p-8">
+                <h4 class="text-2xl font-bold mb-4 text-gray-700">Pedidos Pendientes</h4>
+                <p class="text-gray-600 mb-6">Aquí puedes ver y gestionar todos los pedidos que tienes pendientes.</p>
+                <div class="flex flex-col space-y-4">
+                    <a href="{{ route('agricultor.pedidos_pendientes') }}" class="bg-purple-500 text-white py-3 px-6 rounded-lg hover:bg-purple-600 transition duration-300 ease-in-out text-center">
+                        Ver Pedidos Pendientes
+                    </a>
+                </div>
+            </div>
+
     </div>
 </div>
 </div>

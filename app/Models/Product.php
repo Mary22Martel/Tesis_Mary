@@ -24,9 +24,9 @@ class Product extends Model
 
     // Relación con el modelo User (agricultor)
     public function usuario()
-    {
-        return $this->belongsTo(User::class);
-    }
+{
+    return $this->belongsTo(User::class, 'user_id'); // Asegúrate de que el campo 'user_id' es la clave foránea correcta
+}
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);

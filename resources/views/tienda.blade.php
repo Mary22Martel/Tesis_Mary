@@ -247,6 +247,17 @@ $(document).ready(function() {
         });
     });
 });
+function updateProductStock(productId) {
+    $.ajax({
+        url: '/producto/' + productId, // Ruta para obtener los datos del producto
+        method: 'GET',
+        success: function(response) {
+            // Actualizar la cantidad disponible en la vista
+            $('#producto-' + productId + ' .cantidad-disponible').text('Disponibles: ' + response.cantidad_disponible);
+        }
+    });
+}
+
 
 </script>
 @endsection

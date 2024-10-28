@@ -32,16 +32,26 @@
             <div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300">
                 <h2 class="text-2xl font-bold text-gray-700 mb-4">Gestionar Canastas</h2>
                 <p class="text-gray-600 mb-6">Crear, editar y eliminar canastas de productos.</p>
-                        <div class="flex flex-col space-y-4">
-                            <a href="{{ route('admin.canastas.index') }}" class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out text-center">
-                                Ver Canastas
-                            </a>
-                            <a href="{{ route('admin.canastas.create') }}" class="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out text-center">
-                                Crear Canasta
-                            </a>
-                        </div>
+                <div class="flex flex-col space-y-4">
+                    <a href="{{ route('admin.canastas.index') }}" class="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out text-center">
+                        Ver Canastas
+                    </a>
+                    <a href="{{ route('admin.canastas.create') }}" class="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out text-center">
+                        Crear Canasta
+                    </a>
+                </div>
             </div>
 
+            <!-- Nueva opción para gestionar pedidos -->
+            <div class="bg-white shadow-md hover:shadow-lg rounded-lg p-6 text-center transform hover:scale-105 transition-transform duration-300">
+                <h2 class="text-2xl font-bold text-gray-700 mb-4">Gestionar Pedidos</h2>
+                <p class="text-gray-600 mb-6">Ver, actualizar y gestionar los pedidos realizados.</p>
+                <div class="flex flex-col space-y-4">
+                <a href="{{ route('admin.pedidos.index') }}" class="bg-green-500 text-white py-3 px-6 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out text-center">
+                    Gestionar Pedidos
+                </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

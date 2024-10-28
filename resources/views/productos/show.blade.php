@@ -39,6 +39,7 @@
             <!-- Opciones de cantidad disponibles -->
             <div class="flex items-center space-x-4">
                 <p class="font-semibold">Disponibles: {{ $producto->cantidad_disponible }}</p>
+                
                 <!-- Selector de cantidad -->
                 <div class="flex items-center">
                     <button id="decrease" class="bg-gray-300 text-gray-700 px-2 py-1 rounded-l-lg">-</button>
@@ -99,5 +100,16 @@
             cantidadInput.value = quantityInput.value;
         });
     });
+    function updateProductStock(productId) {
+    $.ajax({
+        url: '/producto/' + productId, // Ruta para obtener los datos del producto
+        method: 'GET',
+        success: function(response) {
+            // Actualizar la cantidad disponible en la vista
+            $('#producto-' + productId + ' .cantidad-disponible').text('Disponibles: ' + response.cantidad_disponible);
+        }
+    });
+}
+
 </script>
 @endsection

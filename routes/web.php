@@ -14,7 +14,7 @@ use App\Http\Controllers\MedidaController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CanastaController;
 use App\Http\Controllers\OrderController;
-
+use App\Http\Controllers\MercadoPagoController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('homepage');
@@ -65,8 +65,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Rutas para canastas
     Route::resource('canastas', CanastaController::class);
-    Route::get('/admin/canastas/create', [CanastaController::class, 'create'])->name('admin.canastas.create');
+
+    // Rutas para pedidos (nota: sin repetir 'admin/')
+    Route::get('/pedidos', [OrderController::class, 'todosLosPedidos'])->name('pedidos.index');
+    Route::get('/pedido/{id}', [OrderController::class, 'detallePedidoAdmin'])->name('pedido.detalle');
+    Route::post('/pedido/{id}/actualizar-estado', [OrderController::class, 'actualizarEstado'])->name('pedido.actualizar_estado');
 });
+
 
 //Login y Register para Agricultor
 Route::get('/agricultor/register', [AgricultorRegisterController::class, 'showRegistrationForm'])->name('agricultor.register');
@@ -86,10 +91,22 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-Route::post('/orden', [OrderController::class, 'store'])->name('order.store');
-//Route::get('/orden-exito', [OrderController::class, 'success'])->name('order.success');
-Route::get('/orden-exito/{orderId}', [OrderController::class, 'success'])->name('order.success');
-Route::get('/orden-voucher/{orderId}', [OrderController::class, 'downloadVoucher'])->name('order.voucher');
+    // Rutas para realizar una orden y mostrar el éxito
+    Route::post('/orden', [OrderController::class, 'store'])->name('order.store');
+    Route::get('/orden-exito/{orderId}', [OrderController::class, 'success'])->name('order.success');
+    Route::get('/orden-voucher/{orderId}', [OrderController::class, 'downloadVoucher'])->name('order.voucher');
+
+    // Rutas para los agricultores relacionadas con pedidos
+    Route::get('/agricultor/pedidos-pendientes', [OrderController::class, 'mostrarPedidosPendientes'])->name('agricultor.pedidos_pendientes');
+    Route::get('/agricultor/pedido/{id}', [OrderController::class, 'detallePedido'])->name('agricultor.pedido.detalle');
+    Route::post('/agricultor/pedido/{id}/confirmar-listo', [OrderController::class, 'confirmarPedidoListo'])->name('agricultor.confirmar_pedido_listo');
+    Route::get('/agricultor/pedidos-listos', [OrderController::class, 'pedidosListos'])->name('agricultor.pedidos_listos');
 });
+
+//mercado pago
+Route::post('/create-preference', [MercadoPagoController::class, 'createPaymentPreference']);
+Route::get('/mercadopago/success', [MercadoPagoController::class, 'success'])->name('mercadopago.success');
+Route::get('/mercadopago/failed', [MercadoPagoController::class, 'failed'])->name('mercadopago.failed');
+
 
 
